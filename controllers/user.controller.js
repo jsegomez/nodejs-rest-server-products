@@ -7,4 +7,13 @@ const getUsers = (req, res = response) => {
     });
 }
 
-module.exports = {getUsers}
+const createUser = (req, res = response) => {
+    const id = req.params.id;
+
+    res.status(201).json({
+        data: req.body,
+        id
+    });
+}
+
+module.exports = {getUsers, createUser}
