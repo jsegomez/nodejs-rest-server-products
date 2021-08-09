@@ -1,5 +1,8 @@
 const { response } = require("express");
 
+// Model
+const User = require('../models/user.model');
+
 
 const getUsers = (req, res = response) => {
     res.status(200).json({
@@ -7,12 +10,14 @@ const getUsers = (req, res = response) => {
     });
 }
 
-const createUser = (req, res = response) => {
-    const id = req.params.id;
+const createUser = async(req, res = response) => {
+    const {name, lastName, email, password} = req.body;
+    const user = new User({name, lastName, email, password});
+
+    const newUser = await user.save();
 
     res.status(201).json({
-        data: req.body,
-        id
+        newUser
     });
 }
 
