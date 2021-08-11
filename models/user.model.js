@@ -21,9 +21,9 @@ const UserSchema = Schema({
     img: {
         type: String,
     },
-    rol: {
+    role: {
         type: String, 
-        required: true,
+        required: [true, 'Rol no valido'],
         enum: ['ADMIN_ROLE', 'USER_ROLE']
     },
     estado: {
@@ -37,7 +37,9 @@ const UserSchema = Schema({
 });
 
 UserSchema.methods.toJSON = function(){
-    const { __v, password, ...user } = this.toObject();
+    const { __v, password, _id, ...user } = this.toObject();
+    const id = _id;
+    user.id = id;
     return user;
 }
 
