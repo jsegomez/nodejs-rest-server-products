@@ -4,7 +4,6 @@ const bcrypt = require('bcrypt');
 // Model
 const User = require('../models/user.model');
 
-
 const getUsers = (req, res = response) => {
     res.status(200).json({
         mensaje: 'Todo OK con el controlador'
@@ -13,20 +12,9 @@ const getUsers = (req, res = response) => {
 
 const createUser = async(req, res = response) => {
     const {name, lastName, email, password, img, role, google, estado} = req.body;
-
-    const existEmail = await User.findOne({email});
-
-    if(existEmail){
-        return res.status(400).json({
-            error: 'Correo electrónico ya se encuentra registrado'
-        });
-    }
-    
-    // Encriptando password
-    const salt = bcrypt.genSaltSync(10);
-
+   
     const user = new User({name, lastName, email, password, img, role, google, estado});
-    user.password = bcrypt.hashSync(password, salt);
+    user.password = encryptPassword(password);
 
     const newUser = await user.save();
 
@@ -35,4 +23,26 @@ const createUser = async(req, res = response) => {
     });
 }
 
-module.exports = {getUsers, createUser}
+const updateUser = async(req, res = response) => {
+    const { id } = req.params;
+    let {google, password, email, ...user} = req.body;
+
+    // TODO validate user exist
+
+    if(password){        
+        user.password = encryptPassword(password);
+    }
+
+    const userUpdated = await User.findByIdAndUpdate(id, user);
+
+    res.status(201).json({
+        user: userUpdated
+    });
+}
+
+const encryptPassword = (password) => {
+    const salt = bcrypt.genSaltSync(10);
+    return bcrypt.hashSync(password, salt);
+}
+
+module.exports = {getUsers, createUser, updateUser}
