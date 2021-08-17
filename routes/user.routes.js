@@ -4,7 +4,7 @@ const { getUsers, createUser, updateUser } = require('../controllers/user.contro
 
 // Validaciones
 const { validateFields } = require('../middlewares/validate-fields');
-const { isValidRole, isUniqueEmail } = require('../helpers/db-validators');
+const { isValidRole, isUniqueEmail, existUserById } = require('../helpers/db-validators');
 
 // Consolidado de rutas
 const router = Router();
@@ -22,6 +22,7 @@ router.post('/', [
 
 router.put('/:id',[
     [
+        check('id', 'Id proporcionado no es valido').isMongoId().custom(existUserById),        
         check('name',     'Favor proporcione un nombre').isLength({min: 2}),
         check('lastName', 'Favor proporcionar su apellido').isLength({min: 2}),
         check('email',    'Favor una dirección de correo valida').isEmail().custom(isUniqueEmail),

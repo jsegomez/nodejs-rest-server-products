@@ -23,9 +23,9 @@ const createUser = async(req, res = response) => {
     });
 }
 
-const updateUser = async(req, res = response) => {
+const  updateUser = async(req, res = response) => {
     const { id } = req.params;
-    let {google, password, email, ...user} = req.body;
+    let {_id, google, password, email, ...user} = req.body;
 
     // TODO validate user exist
 
@@ -33,7 +33,7 @@ const updateUser = async(req, res = response) => {
         user.password = encryptPassword(password);
     }
 
-    const userUpdated = await User.findByIdAndUpdate(id, user);
+    const userUpdated = await User.findByIdAndUpdate(id, user, {new: true});
 
     res.status(201).json({
         user: userUpdated
