@@ -4,9 +4,20 @@ const bcrypt = require('bcrypt');
 // Model
 const User = require('../models/user.model');
 
-const getUsers = (req, res = response) => {
+const getUsers = async(req, res = response) => {
+    const { from = 0, limit = 10 } = req.query;
+
+    const [total, users] = await Promise.all([
+        User.countDocuments({estado: true}),
+        User.find({estado: true})
+            .skip(Number(from))
+            .limit(Number(limit))
+    ]);
+
+    const quantity = users.length;
+
     res.status(200).json({
-        mensaje: 'Todo OK con el controlador'
+        users, quantity, total
     });
 }
 
@@ -23,11 +34,9 @@ const createUser = async(req, res = response) => {
     });
 }
 
-const  updateUser = async(req, res = response) => {
+const updateUser = async(req, res = response) => {
     const { id } = req.params;
     let {_id, google, password, email, ...user} = req.body;
-
-    // TODO validate user exist
 
     if(password){        
         user.password = encryptPassword(password);
@@ -40,9 +49,21 @@ const  updateUser = async(req, res = response) => {
     });
 }
 
+const deleteUser = async(req, res = response) => {
+    const { id } = req.params;
+
+    //await User.findByIdAndDelete(id);
+
+    const response = await User.findByIdAndUpdate(id, {estado: false}, {new: true}); 
+
+    res.status(200).json({
+        ok: true, response
+    });
+}
+
 const encryptPassword = (password) => {
     const salt = bcrypt.genSaltSync(10);
     return bcrypt.hashSync(password, salt);
 }
 
-module.exports = {getUsers, createUser, updateUser}
+module.exports = {getUsers, createUser, updateUser, deleteUser}
