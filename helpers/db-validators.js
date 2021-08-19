@@ -25,5 +25,21 @@ const isUniqueEmail = async(email = '') =>  {
     }
 }
 
-module.exports = { isValidRole, isUniqueEmail, existUserById }
+const existEmailLogin = async(email = '') =>  {
+    const existEmail = await User.findOne({email});
+
+    if(!existEmail){
+        throw new Error('Usuario o contraseña incorrectos');
+    }
+}
+
+const userIsActive = async(email = '') =>  {
+    const existEmail = await User.findOne({email});
+
+    if(existEmail.estado == false){
+        throw new Error('Usuario inactivo');
+    }
+}
+
+module.exports = { isValidRole, isUniqueEmail, existUserById, existEmailLogin, userIsActive }
 
