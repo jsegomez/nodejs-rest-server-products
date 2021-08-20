@@ -4,6 +4,8 @@ const { check } = require('express-validator');
 // Funciones del controlador
 const { getUsers, createUser, updateUser, deleteUser } = require('../controllers/user.controller');
 
+const validateJWT  = require('../middlewares/validate-jwt');
+
 // Validaciones
 const { validateFields } = require('../middlewares/validate-fields');
 const { isValidRole, isUniqueEmail, existUserById } = require('../helpers/db-validators');
@@ -11,7 +13,7 @@ const { isValidRole, isUniqueEmail, existUserById } = require('../helpers/db-val
 // Consolidado de rutas
 const router = Router();
 
-router.get('/', getUsers);
+router.get('/', [validateJWT], getUsers);
 
 router.post('/', [
     check('name', 'Favor proporcione un nombre').isLength({ min: 2 }),
