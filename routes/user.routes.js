@@ -40,6 +40,7 @@ router.put('/:id',
 router.delete(
     '/:id',
     [
+        validateJWT,
         check('id', 'Id proporcionado no es valido').isMongoId().custom(existUserById),
         validateFields
     ],

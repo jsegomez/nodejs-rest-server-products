@@ -51,8 +51,8 @@ const updateUser = async(req, res = response) => {
 
 const deleteUser = async(req, res = response) => {
     const { id } = req.params;
-
-    //await User.findByIdAndDelete(id);
+    const uid = req.uid;
+    console.log(uid);
 
     const response = await User.findByIdAndUpdate(id, {estado: false}, {new: true}); 
 
