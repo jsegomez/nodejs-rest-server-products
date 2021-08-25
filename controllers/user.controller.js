@@ -52,12 +52,13 @@ const updateUser = async(req, res = response) => {
 const deleteUser = async(req, res = response) => {
     const { id } = req.params;
     const uid = req.uid;
-    console.log(uid);
 
     const response = await User.findByIdAndUpdate(id, {estado: false}, {new: true}); 
 
     res.status(200).json({
-        ok: true, response
+        ok: true,
+        userAuthenticated: uid,
+        userDelete: response
     });
 }
 

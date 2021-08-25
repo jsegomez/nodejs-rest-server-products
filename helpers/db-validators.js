@@ -29,12 +29,16 @@ const existEmailLogin = async(email = '') =>  {
     const existEmail = await User.findOne({email});
 
     if(!existEmail){
-        throw new Error('Usuario o contraseña incorrectos');
+        throw new Error('Usuario no registrado');
     }
 }
 
 const userIsActive = async(email = '') =>  {
     const existEmail = await User.findOne({email});
+
+    if(!existEmail){
+        throw new Error('Usuario no registrado o inactivo');
+    }
 
     if(existEmail.estado == false){
         throw new Error('Usuario inactivo');
