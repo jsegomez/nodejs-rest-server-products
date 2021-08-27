@@ -23,5 +23,3 @@ const adminRole = (req, res = response, next) => {
 module.exports = {
     adminRole
 }
-
-
